@@ -16,17 +16,17 @@ class Deck:
         suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
         values = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"]
 
-        self.cards = [Card(value, suit) for value in values for suit in suits]
+        self.cards = [Card(value, suit) for value in values for suit in suits for _ in range(num_decks)]
 
     def __repr__(self):
         return f"Deck containing {len(self.cards)} cards"
 
     def shuffle(self, iterations=1):
-        print(f"Shuffling deck {iterations} time" + "s" if iterations > 1 else "")
+        print(f"Shuffling deck {iterations} time" + ("s" if iterations > 1 else ""))
         for _ in range(iterations):
             random.shuffle(self.cards)
     
-    def draw(self, replacement=False):
+    def draw(self):
         print(self.cards.pop(0))
     
     def show(self, num_cards):
@@ -34,7 +34,7 @@ class Deck:
 
 
 if __name__ == "__main__":
-    deck = Deck(1)
+    deck = Deck(2)
     print(deck)
     print(deck.show(4))
     deck.shuffle()
