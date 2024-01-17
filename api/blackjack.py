@@ -22,17 +22,22 @@ class Card:
         return units[index]
 
 class Deck:
-    def __init__(self, num_decks):
+    def __init__(self, num_decks, cards=None):
         suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
         self.values = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"]
 
-        self.cards = [Card(value, suit) for value in self.values for suit in suits for _ in range(num_decks)]
+        self.cards = cards
+        if cards is None:
+            self.cards = [Card(value, suit) for value in self.values for suit in suits for _ in range(num_decks)]
 
     def __repr__(self):
         return f"Deck containing {len(self.cards)} cards"
     
     def __len__(self):
         return len(self.cards)
+    
+    def toJson(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def shuffle(self, iterations=1):
         # Shuffle a number of times

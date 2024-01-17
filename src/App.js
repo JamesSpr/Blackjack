@@ -53,8 +53,16 @@ function App() {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
-      console.log("Finish", data)
       setGame(prev => ({...prev, dealer: data.dealer,}));
+    }).catch(error => {
+      console.log(error)
+    });
+  }
+
+  const resetGame = async () => {
+    setTurn(0);
+    fetch(window.location.href).then(res => res.json()).then(data => {
+      setGame(data);
     }).catch(error => {
       console.log(error)
     });
@@ -64,6 +72,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <button onClick={() => finishGame()}>Dealers Turn</button>
+        <button onClick={() => resetGame()}>Reset</button>
       </header>
       <div>
         <h1>Dealer</h1>

@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from blackjack import Blackjack
+from blackjack import Blackjack, Deck
 import json
 
 def create_app():
@@ -11,7 +11,6 @@ def create_app():
     def initialise_game(players):
         blackjack = Blackjack(players=players)
         return blackjack.toJson()
-    
 
     @app.route("/draw/<int:player>", methods=('POST',))
     def draw_card(player):
@@ -43,6 +42,24 @@ def create_app():
 
             return jsonify({'dealer': dealer, 'outcome': outcome})
         return None
+    
+    # @app.route("/reset", methods=('POST',))
+    # def reset_game():
+    #     if request.method == 'POST':
+            # game = request.json['game']
+            # deck = Deck(0, game['deck']['cards'])
+
+            # while len(game['dealer']['hand']) > 0:
+            #     deck.cards.append(game['dealer']['hand'].pop())
+
+            # for player in game['players']:
+            #     while len(player['hand']) > 0:
+                    # deck.cards.append(player['hand'].pop())
+
+            # deck.shuffle(3)
+            # game['deck'] = json.loads(deck.toJson())
+            # return jsonify(game)
+
 
     def calculate_player_hand(game, player):
         hand_value = 0
