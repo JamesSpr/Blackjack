@@ -54,7 +54,11 @@ class Player:
     def __init__(self, id):
         self.id = id
         self.hand = []
-        self.actions = []
+        self.hand_value = 0
+        # self.actions = []
+
+    def toJson(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
 class Blackjack:
     def __init__(self, players=1, decks=1):
@@ -70,11 +74,15 @@ class Blackjack:
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     def deal(self):
-        for _ in range(2):
-            for player in self.players:
-                player.hand.append(self.deck.draw())
-            
-            self.dealer.hand.append(self.deck.draw())
+        for player in self.players:
+            player.hand.append(self.deck.draw())
+            player.hand.append(self.deck.draw())
+
+            player.hand_value = self.calculate_player_hand(player)
+                    
+        self.dealer.hand.append(self.deck.draw())
+        self.dealer.hand.append(self.deck.draw())
+        self.dealer.hand_value = self.calculate_player_hand(self.dealer)
 
     def reset(self):
         while len(self.dealer.hand) > 0:
@@ -95,19 +103,35 @@ class Blackjack:
             action = input()
 
         return action
+    
+    def draw_card(player):
+        game = request.json['body']['game']
+        new_card = game.deck.draw()
+        game.players[player].hand.append(new_card)
+        new_value = game.calculate_player_hand(player)
+        game.players[player].hand_value = new_value
 
-    def player_hit(self, player):
+        return game.players[player].toJson()
+        
+
+
+    def player_hit(self):
+        player = request.json['body']['game']
         new_card = self.deck.draw()
-        player.hand.append(new_card)
+        self.players[player].hand.append(new_card)
         new_value = self.calculate_player_hand(player)
-        print(f"  HIT: {new_card} - {new_value}")
-        if player.id == "dealer":
-            return
+        self.players[player].hand_value = new_value
 
-        # Give option for another turn if not over 21
-        if new_value > 21:
-            print("  BUST")
-            return
+        return self.players[player]
+        
+        # print(f"  HIT: {new_card} - {new_value}")
+        # if player.id == "dealer":
+        #     return
+
+        # # Give option for another turn if not over 21
+        # if new_value > 21:
+        #     print("  BUST")
+        #     return
         
 
     def play_dealer(self):
