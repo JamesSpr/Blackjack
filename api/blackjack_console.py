@@ -189,6 +189,7 @@ class Blackjack:
             
             time.sleep(0.5)
 
+    # Console Application Play
     def play(self):
         for round in range(self.rounds):
             
