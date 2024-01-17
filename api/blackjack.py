@@ -2,6 +2,11 @@ import random
 import math
 import json
 
+from flask import (
+    Blueprint, flash, g, redirect, render_template, request, session, url_for
+)
+bp = Blueprint('play', __name__, url_prefix='/play')
+
 class Card:
     # Constructor
     def __init__(self, value, suit):
@@ -91,30 +96,26 @@ class Blackjack:
 
         return action
 
-    def perform_action(self, player, action):
-        if action == "h":
-            new_card = self.deck.draw()
-            player.hand.append(new_card)
-            new_value = self.calculate_player_hand(player)
-            print(f"  HIT: {new_card} - {new_value}")
-            if player.id == "dealer":
-                return
+    def player_hit(self, player):
+        new_card = self.deck.draw()
+        player.hand.append(new_card)
+        new_value = self.calculate_player_hand(player)
+        print(f"  HIT: {new_card} - {new_value}")
+        if player.id == "dealer":
+            return
 
-            # Give option for another turn if not over 21
-            if new_value > 21:
-                print("  BUST")
-                return 
-            
-            action = self.get_action()
-            player.actions.append(action)
-            self.perform_action(player, action)
+        # Give option for another turn if not over 21
+        if new_value > 21:
+            print("  BUST")
+            return
         
 
     def play_dealer(self):
         dealer_value = self.calculate_player_hand(self.dealer)
 
         while dealer_value < 17:
-            self.perform_action(self.dealer, "h")
+            new_card = self.deck.draw()
+            self.dealer.hand.append(new_card)
             dealer_value = self.calculate_player_hand(self.dealer)
 
         return dealer_value
@@ -177,10 +178,9 @@ class Blackjack:
         return 1
 
     def player_round(self, player):
-        for player in self.players:
-            action = self.get_action()
-            player.actions.append(action)
-            self.perform_action(player, action)
+        action = self.get_action()
+        player.actions.append(action)
+        self.perform_action(player, action)
 
         dealer_value = self.play_dealer()
         self.determine_outcome(dealer_value)

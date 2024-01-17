@@ -1,14 +1,14 @@
 from flask import Flask
-from blackjack import Blackjack
+from blackjack import Blackjack, bp as blackjack_bp
 
 def create_app():
     app = Flask(__name__)
-    blackjack = None
+    app.register_blueprint(blackjack_bp)
 
-    @app.route("/play")
-    def initialise_game():
-        blackjack = Blackjack(players=1)
+    @app.route("/blackjack")
+    @app.route("/blackjack/<int:players>")
+    def initialise_game(players=1):
+        blackjack = Blackjack(players)
         return blackjack.toJson()
-
 
     return app
