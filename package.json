@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-api": "cd api && flask run --app api --no-debugger",
+    "start:backend": "flask run --app api --omit=dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
