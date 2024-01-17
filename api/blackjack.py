@@ -2,11 +2,6 @@ import random
 import math
 import json
 
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
-)
-bp = Blueprint('play', __name__, url_prefix='/play')
-
 class Card:
     # Constructor
     def __init__(self, value, suit):
@@ -22,13 +17,11 @@ class Card:
         return units[index]
 
 class Deck:
-    def __init__(self, num_decks, cards=None):
+    def __init__(self, num_decks=1, cards=None, values=None):
         suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
         self.values = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"]
 
-        self.cards = cards
-        if cards is None:
-            self.cards = [Card(value, suit) for value in self.values for suit in suits for _ in range(num_decks)]
+        self.cards = [Card(value, suit) for value in self.values for suit in suits for _ in range(num_decks)] if cards is None else cards
 
     def __repr__(self):
         return f"Deck containing {len(self.cards)} cards"
@@ -49,31 +42,28 @@ class Deck:
         self.cards = self.cards[split:] + self.cards[:split]
     
     def draw(self):
-        card = self.cards.pop(0)
+        card = self.cards.pop()
         return card
     
     def show(self, num_cards):
         return self.cards[:num_cards]
 
 class Player:
-    def __init__(self, id):
+    def __init__(self, id, hand=None, hand_value=0, outcome=""):
         self.id = id
-        self.hand = []
-        self.hand_value = 0
+        self.hand = [] if hand is None else hand
+        self.hand_value = hand_value
+        self.outcome = ""
         # self.actions = []
 
     def toJson(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
 class Blackjack:
-    def __init__(self, players=1, decks=1):
-        self.deck = Deck(decks)
-        self.dealer = Player("dealer")
-        self.players = [Player(player) for player in range(players)]
-
-        # Shuffle the deck before starting
-        self.deck.shuffle(5)
-        self.deal()
+    def __init__(self, num_players=1, num_decks=1, deck=None, dealer=None, players=None):
+        self.deck = Deck(num_decks) if deck is None else deck
+        self.dealer = Player("dealer") if dealer is None else dealer
+        self.players = [Player(player) for player in range(num_players)] if players is None else players
 
     def toJson(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
@@ -98,56 +88,22 @@ class Blackjack:
                 self.deck.cards.append(player.hand.pop())
 
         self.deck.shuffle(3)
-
-    def get_action(self):
-        print(f"  What would you like to do (H/S): ", end="")
-        action = input().lower()
-
-        while action != "h" and action != "s":
-            print(f"  Please enter a valid action: ", end="")
-            action = input()
-
-        return action
+        self.deal()
     
-    def draw_card(player):
-        game = request.json['body']['game']
-        new_card = game.deck.draw()
-        game.players[player].hand.append(new_card)
-        new_value = game.calculate_player_hand(player)
-        game.players[player].hand_value = new_value
-
-        return game.players[player].toJson()
-        
-
-
-    def player_hit(self):
-        player = request.json['body']['game']
+    def player_draw(self, playerId):
+        player = self.players[playerId]
         new_card = self.deck.draw()
-        self.players[player].hand.append(new_card)
+        player.hand.append(new_card)
         new_value = self.calculate_player_hand(player)
-        self.players[player].hand_value = new_value
-
-        return self.players[player]
-        
-        # print(f"  HIT: {new_card} - {new_value}")
-        # if player.id == "dealer":
-        #     return
-
-        # # Give option for another turn if not over 21
-        # if new_value > 21:
-        #     print("  BUST")
-        #     return
+        player.hand_value = new_value
         
 
-    def play_dealer(self):
-        dealer_value = self.calculate_player_hand(self.dealer)
-
-        while dealer_value < 17:
+    def dealer_draw(self):
+        while self.dealer.hand_value < 17:
+            print(self.deck)
             new_card = self.deck.draw()
             self.dealer.hand.append(new_card)
-            dealer_value = self.calculate_player_hand(self.dealer)
-
-        return dealer_value
+            self.dealer.hand_value = self.calculate_player_hand(self.dealer)
 
     def calculate_player_hand(self, player):
         hand_value = 0
@@ -183,35 +139,19 @@ class Blackjack:
         return hand_value
     
     # Returns integer outcome: 0 = loss, 1 = draw, 2 = win
-    def determine_outcome(self, dealer_value):
-        dealer_value = self.calculate_player_hand(self.dealer)
-
+    def set_player_outcomes(self):
         for player in self.players:
-            player_value = self.calculate_player_hand(player)
-
-            if player_value > 21: # Player Bust
-                return 0
+            if player.hand_value > 21: # Player Bust
+                player.outcome = "Loss"
             
-            if dealer_value > 21: # Dealer Bust
-                return 2
+            if self.dealer.hand_value > 21: # Dealer Bust
+                player.outcome = "Win"
             
-            if player_value > dealer_value: # Player Higher
-                return 2
+            if player.hand_value > self.dealer.hand_value: # Player Higher
+                player.outcome = "Win"
             
-            if player_value < dealer_value: # Dealer Higher
-                return 0
+            if player.hand_value < self.dealer.hand_value: # Dealer Higher
+                player.outcome = "Loss"
             
-            if player_value == dealer_value: # Same
-                return 1
-        
-        return 1
-
-    def player_round(self, player):
-        action = self.get_action()
-        player.actions.append(action)
-        self.perform_action(player, action)
-
-        dealer_value = self.play_dealer()
-        self.determine_outcome(dealer_value)
-
-        self.reset()
+            if player.hand_value == self.dealer.hand_value: # Same
+                player.outcome = "Draw"

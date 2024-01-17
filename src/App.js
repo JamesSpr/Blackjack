@@ -35,9 +35,10 @@ function App() {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
+      console.log(data)
       setGame(prev => ({...prev, deck: data.deck, players: [...prev.players.map(obj => {
         if(obj.id === player) {
-          return data.player
+          return data.players[player]
         }
         return obj
       })]}));
@@ -53,7 +54,8 @@ function App() {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
-      setGame(prev => ({...prev, dealer: data.dealer,}));
+      // setGame(prev => ({...prev, dealer: data.dealer}));
+      setGame(data);
     }).catch(error => {
       console.log(error)
     });
@@ -61,7 +63,12 @@ function App() {
 
   const resetGame = async () => {
     setTurn(0);
-    fetch(window.location.href).then(res => res.json()).then(data => {
+    await fetch(`/reset`, {
+      method: "POST",
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({game: game})
+    }).then(res => res.json()).then(data => {
+      // console.log(data)
       setGame(data);
     }).catch(error => {
       console.log(error)
@@ -75,7 +82,7 @@ function App() {
         <button onClick={() => resetGame()}>Reset</button>
       </header>
       <div>
-        <h1>Dealer</h1>
+        <h1>Dealer - {game?.dealer.hand_value}</h1>
         {game?.dealer.hand.map((card, i) => {
           if(i === 0 && turn >= 0) {
             return ( <>

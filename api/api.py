@@ -1,118 +1,79 @@
 from flask import Flask, request, jsonify
-from blackjack import Blackjack, Deck
+from blackjack import Blackjack, Deck, Player, Card
 import json
 
 def create_app():
     app = Flask(__name__)
-    blackjack = None
 
     @app.route("/blackjack")
     @app.route("/blackjack/<int:players>")
     def initialise_game(players):
-        blackjack = Blackjack(players=players)
+        blackjack = Blackjack(num_players=players)
+
+        # Shuffle the deck before starting
+        blackjack.deck.shuffle(5)
+        blackjack.deal()
+
         return blackjack.toJson()
 
     @app.route("/draw/<int:player>", methods=('POST',))
     def draw_card(player):
-        if request.method == 'POST':
-            game = request.json['game']
-            player = game['players'][player]
-            new_card = game['deck']['cards'].pop()
-            player['hand'].append(new_card)
-            player['hand_value'] = calculate_player_hand(game, player)
+        if request.method == 'POST':            
+            blackjack = parse_game_from_json(request.json['game'])
+            blackjack.player_draw(player)
 
-            return jsonify({'player': player, 'deck': game['deck']})
-        
+            return blackjack.toJson()
+                
         return None
-    
     
     @app.route("/draw/dealer", methods=('POST',))
     def dealers_turn():
         if request.method == 'POST':
-            game = request.json['game']
-            dealer = game['dealer']
-            while dealer['hand_value'] < 17:
-                new_card = game['deck']['cards'].pop()
-                dealer['hand'].append(new_card)
-                dealer['hand_value'] = calculate_player_hand(game, dealer)
+            blackjack = parse_game_from_json(request.json['game'])
+            blackjack.dealer_draw()
+            blackjack.set_player_outcomes()
 
-            outcome = []
-            for player in game['players']:
-                outcome.append(determine_outcome(game, player, dealer['hand_value']))
-
-            return jsonify({'dealer': dealer, 'outcome': outcome})
+            return blackjack.toJson()
+        
         return None
     
-    # @app.route("/reset", methods=('POST',))
-    # def reset_game():
-    #     if request.method == 'POST':
-            # game = request.json['game']
-            # deck = Deck(0, game['deck']['cards'])
+    @app.route("/reset", methods=('POST',))
+    def reset_game():
+        if request.method == 'POST':
+            blackjack = parse_game_from_json(request.json['game'])
+            blackjack.reset()
+            return blackjack.toJson()
 
-            # while len(game['dealer']['hand']) > 0:
-            #     deck.cards.append(game['dealer']['hand'].pop())
+    def parse_game_from_json(json_str):
+        game_str = json.dumps({'blackjack': json_str})
+        return json.loads(game_str, object_hook=game_loader)['blackjack']
 
-            # for player in game['players']:
-            #     while len(player['hand']) > 0:
-                    # deck.cards.append(player['hand'].pop())
+    def game_loader(game):
+        if 'blackjack' in game:
+            game['blackjack'] = Blackjack(**game['blackjack'])
+            return game
+        elif 'deck' in game:
+            for idx, _ in enumerate(game['deck']['cards']):
+                game['deck']['cards'][idx] = Card(**game['deck']['cards'][idx])
 
-            # deck.shuffle(3)
-            # game['deck'] = json.loads(deck.toJson())
-            # return jsonify(game)
+            game['deck'] = Deck(**game['deck'])
 
+            if 'players' in game:
+                for idx, player in enumerate(game['players']):
+                    for card_idx, _ in enumerate(player['hand']):
+                        game['players'][idx]['hand'][card_idx] = Card(**game['players'][idx]['hand'][card_idx])
 
-    def calculate_player_hand(game, player):
-        hand_value = 0
-        card_ints = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
-    
-        # Dealer Rule: Dealer must count their first ace as 11
-        if player['id'] == "dealer":
-            ace_rule = False
-            for card in player['hand']:
-                card_value = card_ints[game['deck']['values'].index(card['value'])]
-                if card_value == 1 and not ace_rule:
-                    hand_value += 11
-                    ace_rule = True
-                else:
-                    hand_value += card_value
+                    game['players'][idx] = Player(**game['players'][idx])
 
-            return hand_value
-        
-        num_aces = 0
-        for card in player['hand']:
-            card_value = card_ints[game['deck']['values'].index(card['value'])]
-            if card_value == 1:
-                hand_value += 11
-                num_aces += 1
-            else: 
-                hand_value += card_value
+                if 'dealer' in game:
+                    for idx, _ in enumerate(game['dealer']['hand']):
+                        game['dealer']['hand'][idx] = Card(**game['dealer']['hand'][idx])
 
-        # Count aces as 11, unless that makes the value exceed 21
-        if hand_value > 21 and num_aces > 0:
-            while num_aces > 0 and hand_value > 21:
-                hand_value -= 10
-                num_aces -= 1
-
-        return hand_value
-    
-    def determine_outcome(game, player, dealer_value):
-        player_value = calculate_player_hand(game, player)
-
-        if player_value > 21: # Player Bust
-            return 0
-        
-        if dealer_value > 21: # Dealer Bust
-            return 2
-        
-        if player_value > dealer_value: # Player Higher
-            return 2
-        
-        if player_value < dealer_value: # Dealer Higher
-            return 0
-        
-        if player_value == dealer_value: # Same
-            return 1
-        
-        return 1
+                    game['dealer'] = Player(**game['dealer'])
+                    return game
+                
+            return game
+        else:
+            return game
 
     return app
