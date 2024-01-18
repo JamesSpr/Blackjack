@@ -76,7 +76,7 @@ function App() {
 
   const resetGame = async () => {
     setTurn(0);
-    await fetch(`/reset`, {
+    await fetch(`reset`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json', 

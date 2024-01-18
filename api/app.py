@@ -5,8 +5,8 @@ import json
 def create_app():
     app = Flask(__name__)
 
-    @app.route("blackjack")
-    @app.route("blackjack/<int:players>")
+    @app.route("/blackjack")
+    @app.route("/blackjack/<int:players>")
     def initialise_game(players):
         blackjack = Blackjack(num_players=players)
 
@@ -16,7 +16,7 @@ def create_app():
 
         return blackjack.toJson()
 
-    @app.route("draw/<int:player>", methods=('POST',))
+    @app.route("/draw/<int:player>", methods=('POST',))
     def draw_card(player):
         if request.method == 'POST':            
             blackjack = parse_game_from_json(request.json['game'])
@@ -26,7 +26,7 @@ def create_app():
                 
         return None
     
-    @app.route("draw/dealer", methods=('POST',))
+    @app.route("/draw/dealer", methods=('POST',))
     def dealers_turn():
         if request.method == 'POST':
             blackjack = parse_game_from_json(request.json['game'])
@@ -37,7 +37,7 @@ def create_app():
         
         return None
     
-    @app.route("reset", methods=('POST',))
+    @app.route("/reset", methods=('POST',))
     def reset_game():
         if request.method == 'POST':
             blackjack = parse_game_from_json(request.json['game'])
