@@ -2,8 +2,12 @@ from flask import Flask, request
 from blackjack import Blackjack, Deck, Player, Card
 import json
 
+from flask_cors import CORS, cross_origin
+
+
 def create_app():
     app = Flask(__name__)
+    cors = CORS(app, resources={r"/blackjack/*": {"origins": "*"}})
 
     @app.route("/blackjack")
     @app.route("/blackjack/<int:players>")
