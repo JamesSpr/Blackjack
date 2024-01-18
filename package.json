@@ -13,7 +13,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start && serve -s build",
     "start:backend": "flask --app app run --no-debug",
     "build": "react-scripts build",
     "test": "react-scripts test",
