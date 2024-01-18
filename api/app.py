@@ -3,14 +3,14 @@ from blackjack import Blackjack, Deck, Player, Card
 import json
 
 from flask_cors import CORS, cross_origin
-    
+
 
 def create_app():
     app = Flask(__name__)
     cors = CORS(app=app)
 
-    @app.route("/blackjack")
-    @app.route("/blackjack/<int:players>")
+    @app.route("/blackjack", methods=('GET'))
+    @app.route("/blackjack/<int:players>", methods=('GET'))
     def initialise_game(players):
         blackjack = Blackjack(num_players=players)
 
@@ -20,7 +20,7 @@ def create_app():
 
         return blackjack.toJson()
 
-    @app.route("/blackjack/draw/<int:player>", methods=('POST',))
+    @app.route("/blackjack/draw/<int:player>", methods=('POST', 'OPTIONS'))
     def draw_card(player):
         if request.method == 'POST':            
             blackjack = parse_game_from_json(request.json['game'])
