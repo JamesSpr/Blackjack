@@ -18,7 +18,7 @@ function App() {
     "King": "K",
   }
 
-  const [game, setGame] = useState();
+  const [game, setGame] = useState(null);
   const [turn, setTurn] = useState(0);
 
   useEffect(() => {
