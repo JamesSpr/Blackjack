@@ -1,8 +1,8 @@
 {
     "version": 2,
     "builds": [
-      { "src": "requirements.txt", "use": "@vercel/python" },
-      { "src": "/src", "use": "@vercel/react" }
+      { "src": "/api/*", "use": "@vercel/python" },
+      { "src": "/src/*", "use": "@vercel/create-react" }
     ],
     "rewrites": [
         {
