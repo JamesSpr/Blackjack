@@ -3,15 +3,14 @@ from blackjack import Blackjack, Deck, Player, Card
 import json
 
 from flask_cors import CORS, cross_origin
-
+    
 
 def create_app():
     app = Flask(__name__)
-    cors = CORS(app, resources={r"/blackjack/*": {"origins": "*"}})
+    cors = CORS(app=app)
 
     @app.route("/blackjack")
     @app.route("/blackjack/<int:players>")
-    @cross_origin
     def initialise_game(players):
         blackjack = Blackjack(num_players=players)
 
