@@ -11,6 +11,7 @@ def create_app():
 
     @app.route("/blackjack")
     @app.route("/blackjack/<int:players>")
+    @cross_origin
     def initialise_game(players):
         blackjack = Blackjack(num_players=players)
 
