@@ -1,10 +1,15 @@
 {
     "version": 2,
     "builds": [
-      { "src": "src/index.js", "use": "@vercel/create-react" },
       { "src": "api/app.py", "use": "@vercel/python" }
     ],
     "routes": [
-      { "src": "/(.*)", "dest": "src/index.js" }
+      { "src": "/(.*)", "dest": "api/app.py" }
+    ],
+    "rewrites": [
+        {
+        "source": "/(.*)",
+        "destination": "/index.html"
+        }
     ]
   }
