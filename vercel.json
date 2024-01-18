@@ -1,8 +1,8 @@
 {
     "version": 2,
     "builds": [
-      { "src": "api/*", "use": "@vercel/python" },
-      { "src": "src/*", "use": "@vercel/React" }
+      { "src": "api/app.py", "use": "@vercel/python" },
+      { "src": "/", "use": "npm run build" }
     ],
     "rewrites": [
         {
