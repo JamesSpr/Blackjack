@@ -9,8 +9,8 @@ def create_app():
     app = Flask(__name__)
     cors = CORS(app=app)
 
-    @app.route("/blackjack", methods=('GET'))
-    @app.route("/blackjack/<int:players>", methods=('GET'))
+    @app.route("/blackjack", methods=['GET', 'OPTIONS'])
+    @app.route("/blackjack/<int:players>", methods=['GET', 'OPTIONS'])
     def initialise_game(players):
         blackjack = Blackjack(num_players=players)
 
