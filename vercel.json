@@ -2,7 +2,7 @@
     "version": 2,
     "builds": [
       { "src": "/api/*", "use": "@vercel/python" },
-      { "src": "/src/*", "use": "@vercel/create-react" }
+      { "src": "/src/*", "use": "@vercel/npm" }
     ],
     "rewrites": [
         {
