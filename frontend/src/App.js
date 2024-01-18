@@ -63,7 +63,11 @@ function App() {
       method: "POST",
       headers: {
         'Content-Type': 'application/json', 
-        'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate'
+        'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate',
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Origin": "https://blackjack-backend-production.up.railway.app",
+        "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
       },
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
