@@ -25,6 +25,11 @@ function App() {
     fetch(`https://blackjack-backend-production.up.railway.app${window.location.pathname}`, {
       headers: {
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate',
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Origin": "https://blackjack-backend-production.up.railway.app",
+        "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
       }}
     ).then(res => res.json()).then(data => {
       console.log(data)
@@ -59,7 +64,7 @@ function App() {
     await fetch(`https://blackjack-backend-production.up.railway.app/blackjack/draw/dealer`, {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json', 
       },
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
@@ -75,7 +80,8 @@ function App() {
     await fetch(`https://blackjack-backend-production.up.railway.app/blackjack/reset`, {
       method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json', 
+        'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate'
       },
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
