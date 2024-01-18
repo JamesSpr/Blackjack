@@ -83,7 +83,6 @@ const ReactGame = ({game, setGame}) => {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
-      // setGame(prev => ({...prev, dealer: data.dealer}));
       setGame(data);
     }).catch(error => {
       console.log(error)
@@ -97,7 +96,6 @@ const ReactGame = ({game, setGame}) => {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
-      // console.log(data)
       setGame(data);
     }).catch(error => {
       console.log(error)
