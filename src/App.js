@@ -22,8 +22,13 @@ function App() {
   const [turn, setTurn] = useState(0);
 
   useEffect(() => {
-    fetch(window.location.href).then(res => res.json()).then(data => {
-		setGame(data);
+    fetch(window.location.href, {
+      headers: {
+        'Content-Type': 'application/json', 
+        'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate'
+      }}
+    ).then(res => res.json()).then(data => {
+		  setGame(data);
     }).catch(error => {
       console.log(error)
     });
@@ -32,7 +37,10 @@ function App() {
   const drawCard = async (player) => {
     await fetch(`/draw/${player}`, {
       method: "POST",
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json', 
+        'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate'
+      },
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
       console.log(data)
@@ -51,7 +59,10 @@ function App() {
     setTurn(-1);
     await fetch(`/draw/dealer`, {
       method: "POST",
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json', 
+        'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate'
+      },
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
       // setGame(prev => ({...prev, dealer: data.dealer}));
@@ -65,7 +76,10 @@ function App() {
     setTurn(0);
     await fetch(`/reset`, {
       method: "POST",
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json', 
+        'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate'
+      },
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
       // console.log(data)
