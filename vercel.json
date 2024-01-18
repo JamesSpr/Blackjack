@@ -1,7 +1,7 @@
 {
     "version": 2,
     "builds": [
-        { "src": "/", "use": "npm run build" },
+        { "src": "src/index.js", "use": "npm run build" },
         { "src": "api/app.py", "use": "@vercel/python" }
     ],
     "rewrites":  [
