@@ -25,9 +25,11 @@ function App() {
     fetch(window.location.href, {
       headers: {
         'Content-Type': 'application/json', 
+        'Accept': 'application/json', 
         'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate'
       }}
     ).then(res => res.json()).then(data => {
+      console.log(data)
 		  setGame(data);
     }).catch(error => {
       console.log(error)
