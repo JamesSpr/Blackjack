@@ -22,7 +22,7 @@ function App() {
   const [turn, setTurn] = useState(0);
 
   useEffect(() => {
-    fetch(`${process.env.RAILWAY_URI}/${window.location.href}`, {
+    fetch(`https://blackjack-backend-production.up.railway.app:5000/${window.location.href}`, {
       headers: {
         'Content-Type': 'application/json', 
         'Accept': 'application/json', 
@@ -37,7 +37,7 @@ function App() {
   }, []);
 
   const drawCard = async (player) => {
-    await fetch(`${process.env.RAILWAY_URI}//draw/${player}`, {
+    await fetch(`https://blackjack-backend-production.up.railway.app:5000/draw/${player}`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json', 
@@ -59,7 +59,7 @@ function App() {
 
   const finishGame = async () => {
     setTurn(-1);
-    await fetch(`${process.env.RAILWAY_URI}//draw/dealer`, {
+    await fetch(`https://blackjack-backend-production.up.railway.app:5000/draw/dealer`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json', 
@@ -76,7 +76,7 @@ function App() {
 
   const resetGame = async () => {
     setTurn(0);
-    await fetch(`${process.env.RAILWAY_URI}//reset`, {
+    await fetch(`https://blackjack-backend-production.up.railway.app:5000/reset`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json', 
