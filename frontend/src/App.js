@@ -22,7 +22,7 @@ function App() {
   const [turn, setTurn] = useState(0);
 
   useEffect(() => {
-    fetch(`https://blackjack-backend-production.up.railway.app:5000/${window.location.href}`, {
+    fetch(`https://blackjack-backend-production.up.railway.app:5000${window.location.pathname}`, {
       headers: {
         'Content-Type': 'application/json', 
         'Accept': 'application/json', 
