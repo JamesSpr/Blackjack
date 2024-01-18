@@ -1,6 +1,7 @@
 {
     "version": 2,
     "builds": [
+      { "src": "src/index.js", "use": "@vercel/create-react" },
       { "src": "api/app.py", "use": "@vercel/python" }
     ],
     "routes": [
