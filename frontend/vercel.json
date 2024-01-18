@@ -1,7 +1,7 @@
 {
     "headers": [
       {
-        "source": "/api/(.*)",
+        "source": "https://blackjack-backend-production.up.railway.app/(.*)",
         "headers": [
           { "key": "Access-Control-Allow-Credentials", "value": "true" },
           { "key": "Access-Control-Allow-Origin", "value": "https://blackjack-backend-production.up.railway.app" },
