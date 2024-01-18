@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from .blackjack import Blackjack, Deck, Player, Card
+from blackjack import Blackjack, Deck, Player, Card
 import json
 
 def create_app():
