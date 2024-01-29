@@ -7,7 +7,7 @@ from flask_cors import CORS, cross_origin
 
 def create_app():
     app = Flask(__name__)
-    cors = CORS(app=app, origins="https://blackjack-demo-dev.vercel.app/")
+    # cors = CORS(app=app, origins="https://blackjack-demo-dev.vercel.app/")
 
     @app.route("/blackjack", methods=['GET', 'OPTIONS'])
     @app.route("/blackjack/<int:players>", methods=['GET', 'OPTIONS'])

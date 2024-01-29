@@ -1,7 +1,45 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
+  const [game, setGame] = useState();
+
+  return (
+    <>
+      {game ?
+        <ReactGame game={game} setGame={setGame} />
+      :
+        <GameLobby setGame={setGame} />
+      }
+    </>
+  );
+}
+
+const GameLobby = ({setGame}) => {
+
+  const [players, setPlayers] = useState(1);
+
+  const getGame = async () => {
+    fetch(`blackjack/${players}`).then(res => res.json()).then(data => {
+      console.log(data);
+		  setGame(data);
+    }).catch(error => {
+      console.log(error)
+    });
+
+  };
+
+  return (
+    <div>
+      <h1>Blackjack</h1>
+      <p>Enter the number of players:</p>
+      <input type="number" onChange={(e) => setPlayers(e.target.value)} min={1} step={1} value={players}/>
+      <button onClick={getGame}>Play</button>
+    </div>
+  )
+}
+
+const ReactGame = ({game, setGame}) => {
   const cardValues = {
     "Ace": "A",
     "Two": "2",
@@ -18,11 +56,10 @@ function App() {
     "King": "K",
   }
 
-  const [game, setGame] = useState(null);
   const [turn, setTurn] = useState(0);
 
   useEffect(() => {
-    fetch(`https://blackjack-backend-production.up.railway.app${window.location.pathname}`, {
+    fetch(`blackjack/${window.location.pathname}`, {
       headers: {
         'Content-Type': 'application/json',
         'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate',
@@ -40,11 +77,9 @@ function App() {
   }, []);
 
   const drawCard = async (player) => {
-    await fetch(`https://blackjack-backend-production.up.railway.app/blackjack/draw/${player}`, {
+    await fetch(`blackjack/draw/${player}`, {
       method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
       console.log(data)
@@ -61,14 +96,11 @@ function App() {
 
   const finishGame = async () => {
     setTurn(-1);
-    await fetch(`https://blackjack-backend-production.up.railway.app/blackjack/draw/dealer`, {
+    await fetch(`blackjack/draw/dealer`, {
       method: "POST",
-      headers: {
-        'Content-Type': 'application/json', 
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
-      // setGame(prev => ({...prev, dealer: data.dealer}));
       setGame(data);
     }).catch(error => {
       console.log(error)
@@ -77,15 +109,11 @@ function App() {
 
   const resetGame = async () => {
     setTurn(0);
-    await fetch(`https://blackjack-backend-production.up.railway.app/blackjack/reset`, {
+    await fetch(`blackjack/reset`, {
       method: "POST",
-      headers: {
-        'Content-Type': 'application/json', 
-        'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate'
-      },
+      headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({game: game})
     }).then(res => res.json()).then(data => {
-      // console.log(data)
       setGame(data);
     }).catch(error => {
       console.log(error)
@@ -95,6 +123,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <button onClick={() => setGame()}>Back</button>
         <button onClick={() => finishGame()}>Dealers Turn</button>
         <button onClick={() => resetGame()}>Reset</button>
       </header>
@@ -126,7 +155,7 @@ function App() {
         </>
       ))}
     </div>
-  );
+  )
 }
 
 export default App;
