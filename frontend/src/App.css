@@ -2,15 +2,132 @@ h1 {
     margin: 5px;
 }
 
+html {
+    background:
+    repeating-linear-gradient(
+        -45deg,
+        transparent 0,
+        transparent 25%,
+        #79d29d 0,
+        #79d29d 50%
+   ),
+   repeating-linear-gradient(
+        45deg,
+        transparent 0,
+        transparent 25%,
+        #6fc391 0,
+        #6fc391 50%
+    ),
+    repeating-linear-gradient(
+        transparent 0,
+        transparent 25%,
+        #7fe3a7 0,
+        #7fe3a7 50%
+    ), #6fc391;
+    background-blend-mode: multiply;
+    background-size: 5px 5px;
+
+}
+
+body, #app, .game-space {
+    height: 100vh;
+    width: 100vw;
+}
+
+.lobby {
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.player-input {
+    width: 100px;
+}
+
+.play-button {
+    width: 150px;
+    height: 40px;
+    margin-top: 10px;
+}
+
+.game-space {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.dealer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(0.5) translate(0px, -50%);
+}
+
+.players {
+    display: flex;
+    justify-content: space-between;
+    /* flex-wrap: wrap; */
+    align-items: center;
+    overflow-x: auto;
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.playerhand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin: 0 5px;
+}
+
+.playerhand * .playing-card {
+    width: 100px;
+    height: 125px;
+}
+
+.playerhand.active {
+    position: absolute;
+    top: 25vh;
+    width: 100%;
+}
+
+.playerhand.active * .playing-card {
+    width: 200px;
+    height: 250px;
+}
+
+.bust, .loss{
+    background-color: rgba(255, 20, 20, 0.5);
+}
+
+.player-cards {
+    display: flex;
+}
+
 .playing-card {
     border: 1px solid grey;
     border-radius: 10px;
     margin: 5px;
 }
 
-.hit-button {
-    display: block;
+.action-button {
+    display: inline-block;
     padding: 5px;
     margin-left: 10px;
-    width: 100px;
+    width: 150px;
+}
+
+.actions {
+    display: none;
+}
+.actions.active {
+    display: block;
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const BlackjackGame = ({game, setGame}) => {
     const cardValues = {
@@ -19,37 +19,22 @@ const BlackjackGame = ({game, setGame}) => {
   
     const [turn, setTurn] = useState(0);
   
-    useEffect(() => {
-      fetch(`blackjack/${window.location.pathname}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate',
-          "Access-Control-Allow-Credentials": "true",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-          "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
-        }}
-      ).then(res => res.json()).then(data => {
-        console.log(data)
-            setGame(data);
-      }).catch(error => {
-        console.log(error)
-      });
-    }, [setGame]);
-  
     const drawCard = async (player) => {
       await fetch(`blackjack/draw/${player}`, {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({game: game})
       }).then(res => res.json()).then(data => {
-        console.log(data)
         setGame(prev => ({...prev, deck: data.deck, players: [...prev.players.map(obj => {
           if(obj.id === player) {
             return data.players[player]
           }
           return obj
         })]}));
+
+        if(data.players[player].hand_value >= 21) {
+            setTurn(turn + 1)
+        }
       }).catch(error => {
         console.log(error)
       });
@@ -81,41 +66,56 @@ const BlackjackGame = ({game, setGame}) => {
       });
     }
   
-    return (
-      <div className="App">
-        <header className="App-header">
-          <button onClick={() => setGame()}>Back</button>
-          <button onClick={() => finishGame()}>Dealers Turn</button>
-          <button onClick={() => resetGame()}>Reset</button>
-        </header>
-        <div>
-          <h1>Dealer - {game?.dealer.hand_value}</h1>
-          {game?.dealer.hand.map((card, i) => {
-            if(i === 0 && turn >= 0) {
-              return ( <>
-                <img className="playing-card" src="/cards/Back.jpg" alt={"Face Down Card"}/>
-              </>);
-            }
-            
-            let cardPath = `/cards/${cardValues[card.value]}${card.suit[0]}.jpg`
-            return ( <>
-              <img className="playing-card" src={cardPath} alt={"Card " + card.value + " of " + card.suit}/>
-            </>);
-          })}
+    return ( <>
+        <div className='game-space'>
+            <div className="controls">
+                <button onClick={() => setGame()}>Back</button>
+                <button onClick={() => finishGame()}>Dealers Turn</button>
+                <button onClick={() => resetGame()}>Reset</button>
+
+                <div className='dealer'>
+                    <div>
+                        <h1>Dealer - {game?.dealer.hand_value}</h1>
+                    </div>
+                    <div>
+                        {game?.dealer.hand.map((card, i) => {
+                            if(i === 0 && turn >= 0) {
+                                return ( <>
+                                <img className="playing-card" src="/cards/Back.jpg" alt={"Face Down Card"}/>
+                            </>);
+                            }
+                            
+                            let cardPath = `/cards/${cardValues[card.value]}${card.suit[0]}.jpg`
+                            return ( <>
+                            <img className="playing-card" src={cardPath} alt={"Card " + card.value + " of " + card.suit}/>
+                            </>);
+                        })}
+                    </div>
+                </div>
+            </div>
+            <div className="players">
+            {game?.players.map(player => (
+                <div className={`playerhand ${turn === player.id ? 'active' : ''} ${player.outcome}`}>
+                <div className='player-info'>
+                    <h1>Player{player.id} - {player.hand_value}</h1>
+                </div>
+                <div className='player-cards'>
+                    {player?.hand.map((card) => {
+                        let cardPath = `/cards/${cardValues[card.value]}${card.suit[0]}.jpg`
+                        return ( <>
+                        <img className="playing-card" src={cardPath} alt={"Card " + card.value + " of " + card.suit}/>
+                        </>);
+                    })}
+                </div>
+                <div className={`actions ${turn === player.id ? 'active' : ''}`}>
+                    <button className="action-button" onClick={() => drawCard(player.id)} disabled={turn !== player.id}>Hit</button>
+                    <button className="action-button" onClick={() => setTurn(turn + 1)} disabled={turn !== player.id}>Stand</button>
+                </div>
+            </div>
+            ))}
+            </div>
         </div>
-        {game?.players.map(player => (
-          <>
-          <h1>Player{player.id} - {player.hand_value}</h1>
-          <button className="hit-button" onClick={() => drawCard(player.id)} disabled={player.hand_value >= 21}>Hit</button>
-          {player?.hand.map((card) => {
-            let cardPath = `/cards/${cardValues[card.value]}${card.suit[0]}.jpg`
-            return ( <>
-              <img className="playing-card" src={cardPath} alt={"Card " + card.value + " of " + card.suit}/>
-            </>);
-          })}
-          </>
-        ))}
-      </div>
+    </>
     )
 }
 
