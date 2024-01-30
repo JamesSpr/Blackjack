@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const BlackjackGame = ({game, setGame}) => {
     const cardValues = {
@@ -18,6 +18,24 @@ const BlackjackGame = ({game, setGame}) => {
     }
   
     const [turn, setTurn] = useState(0);
+
+    useEffect(() => {
+        if(turn >= game.players.length) {
+            const finishGame = async () => {
+                setTurn(-1);
+                await fetch(`blackjack/draw/dealer`, {
+                  method: "POST",
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify({game: game})
+                }).then(res => res.json()).then(data => {
+                  setGame(data);
+                }).catch(error => {
+                  console.log(error)
+                });
+            }
+            finishGame()
+        }
+    }, [turn])
   
     const drawCard = async (player) => {
       await fetch(`blackjack/draw/${player}`, {
@@ -40,19 +58,6 @@ const BlackjackGame = ({game, setGame}) => {
       });
     }
   
-    const finishGame = async () => {
-      setTurn(-1);
-      await fetch(`blackjack/draw/dealer`, {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({game: game})
-      }).then(res => res.json()).then(data => {
-        setGame(data);
-      }).catch(error => {
-        console.log(error)
-      });
-    }
-  
     const resetGame = async () => {
       setTurn(0);
       await fetch(`blackjack/reset`, {
@@ -70,7 +75,7 @@ const BlackjackGame = ({game, setGame}) => {
         <div className='game-space'>
             <div className="controls">
                 <button onClick={() => setGame()}>Back</button>
-                <button onClick={() => finishGame()}>Dealers Turn</button>
+                {/* <button onClick={() => finishGame()}>Dealers Turn</button> */}
                 <button onClick={() => resetGame()}>Reset</button>
 
                 <div className='dealer'>

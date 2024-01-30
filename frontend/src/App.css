@@ -29,9 +29,9 @@ html {
 
 }
 
-body, #app, .game-space {
-    height: 100vh;
-    width: 100vw;
+html, body, #app, .game-space {
+    height: 100%;
+    width: 100%;
 }
 
 .lobby {
@@ -63,7 +63,6 @@ body, #app, .game-space {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transform: scale(0.5) translate(0px, -50%);
 }
 
 .players {
@@ -84,11 +83,9 @@ body, #app, .game-space {
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    margin: 0 5px;
 }
 
-.playerhand * .playing-card {
+.playing-card {
     width: 100px;
     height: 125px;
 }

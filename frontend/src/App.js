@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import GameLobby from './pages/GameLobby.tsx';
 import BlackjackGame from './pages/Game.tsx';
 import './App.css';

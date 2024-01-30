@@ -17,7 +17,7 @@ const GameLobby = ({setGame}) => {
       <div className="lobby">
         <h1>Blackjack</h1>
         <p>Enter the number of players:</p>
-        <input className="player-input" type="number" onChange={(e) => setPlayers(parseInt(e.target.value))} min={1} step={1} value={players}/>
+        <input className="player-input" type="number" onChange={(e) => setPlayers(parseInt(e.target.value))} min={1} max={6} step={1} value={players}/>
         <button className="play-button" onClick={getGame}>Play</button>
       </div>
     )
