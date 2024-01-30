@@ -53,7 +53,7 @@ class Player:
         self.id = id
         self.hand = [] if hand is None else hand
         self.hand_value = hand_value
-        self.outcome = ""
+        self.outcome = outcome
         # self.actions = []
 
     def toJson(self):
@@ -86,6 +86,8 @@ class Blackjack:
         for player in self.players:
             while len(player.hand) > 0:
                 self.deck.cards.append(player.hand.pop())
+            player.hand_value = 0
+            player.outcome = ""
 
         self.deck.shuffle(3)
         self.deal()
@@ -96,6 +98,9 @@ class Blackjack:
         player.hand.append(new_card)
         new_value = self.calculate_player_hand(player)
         player.hand_value = new_value
+
+        if new_value > 21:
+            player.outcome = "bust"
         
 
     def dealer_draw(self):
@@ -144,16 +149,16 @@ class Blackjack:
     def set_player_outcomes(self):
         for player in self.players:
             if player.hand_value > 21: # Player Bust
-                player.outcome = "Loss"
+                player.outcome = "loss"
             
-            if self.dealer.hand_value > 21: # Dealer Bust
-                player.outcome = "Win"
+            elif self.dealer.hand_value > 21: # Dealer Bust
+                player.outcome = "win"
             
-            if player.hand_value > self.dealer.hand_value: # Player Higher
-                player.outcome = "Win"
+            elif player.hand_value > self.dealer.hand_value: # Player Higher
+                player.outcome = "win"
             
-            if player.hand_value < self.dealer.hand_value: # Dealer Higher
-                player.outcome = "Loss"
+            elif player.hand_value < self.dealer.hand_value: # Dealer Higher
+                player.outcome = "loss"
             
-            if player.hand_value == self.dealer.hand_value: # Same
-                player.outcome = "Draw"
+            elif player.hand_value == self.dealer.hand_value: # Same
+                player.outcome = "draw"
