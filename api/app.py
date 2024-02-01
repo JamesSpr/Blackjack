@@ -2,8 +2,7 @@ from flask import Flask, request
 from blackjack import Blackjack, Deck, Player, Card
 import json
 
-from flask_cors import CORS, cross_origin
-
+# from flask_cors import CORS, cross_origin
 
 def create_app():
     app = Flask(__name__)
