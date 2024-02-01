@@ -149,7 +149,7 @@ class Blackjack:
     def set_player_outcomes(self):
         for player in self.players:
             if player.hand_value > 21: # Player Bust
-                player.outcome = "loss"
+                player.outcome = "lose"
             
             elif self.dealer.hand_value > 21: # Dealer Bust
                 player.outcome = "win"
@@ -158,7 +158,7 @@ class Blackjack:
                 player.outcome = "win"
             
             elif player.hand_value < self.dealer.hand_value: # Dealer Higher
-                player.outcome = "loss"
+                player.outcome = "lose"
             
             elif player.hand_value == self.dealer.hand_value: # Same
                 player.outcome = "draw"

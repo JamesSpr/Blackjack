@@ -74,10 +74,7 @@ const BlackjackGame = ({game, setGame}) => {
     return ( <>
         <div className='game-space'>
             <div className="controls">
-                <button onClick={() => setGame()}>Back</button>
-                {/* <button onClick={() => finishGame()}>Dealers Turn</button> */}
-                <button onClick={() => resetGame()}>Reset</button>
-
+                <button onClick={() => setGame()}>Menu</button>
                 <div className='dealer'>
                     <div>
                         <h1>Dealer - {game?.dealer.hand_value}</h1>
@@ -98,24 +95,58 @@ const BlackjackGame = ({game, setGame}) => {
                     </div>
                 </div>
             </div>
+            <div className='playing-area'>
+              {turn === -1 &&
+                <div className='outcome-screen'>
+                  <h1>Game Outcome</h1>
+                  {game?.players.map(player => (
+                    <p>Player {player.id} had {player.hand_value} they {player.outcome}</p>
+                  ))}
+                  <button className='action-button' onClick={() => resetGame()}>Play Again</button>
+                  <button className='action-button' onClick={() => setGame()}>Menu</button>
+                </div>
+              }
+
+              {game?.players.map(player => (
+                  turn === player.id && 
+                    <div className={`playerhand ${turn === player.id ? 'active' : ''} ${player.outcome}`}>
+                    <div className='player-info'>
+                        <h1>Player{player.id} - {player.hand_value}</h1>
+                    </div>
+                    <div className={`player-cards ${turn === player.id ? 'active' : ''}`}>
+                        {player?.hand.map((card) => {
+                            let cardPath = `/cards/${cardValues[card.value]}${card.suit[0]}.jpg`
+                            return ( <>
+                            <img className="playing-card" src={cardPath} alt={"Card " + card.value + " of " + card.suit}/>
+                            </>);
+                        })}
+                    </div>
+                    <div className={`actions ${turn === player.id ? 'active' : ''}`}>
+                        <button className="action-button" onClick={() => drawCard(player.id)} disabled={turn !== player.id}>Hit</button>
+                        <button className="action-button" onClick={() => setTurn(turn + 1)} disabled={turn !== player.id}>Stand</button>
+                    </div>
+              </div>
+              ))}
+            </div>
             <div className="players">
             {game?.players.map(player => (
-                <div className={`playerhand ${turn === player.id ? 'active' : ''} ${player.outcome}`}>
-                <div className='player-info'>
-                    <h1>Player{player.id} - {player.hand_value}</h1>
-                </div>
-                <div className='player-cards'>
-                    {player?.hand.map((card) => {
-                        let cardPath = `/cards/${cardValues[card.value]}${card.suit[0]}.jpg`
-                        return ( <>
-                        <img className="playing-card" src={cardPath} alt={"Card " + card.value + " of " + card.suit}/>
-                        </>);
-                    })}
-                </div>
-                <div className={`actions ${turn === player.id ? 'active' : ''}`}>
-                    <button className="action-button" onClick={() => drawCard(player.id)} disabled={turn !== player.id}>Hit</button>
-                    <button className="action-button" onClick={() => setTurn(turn + 1)} disabled={turn !== player.id}>Stand</button>
-                </div>
+                turn !== player.id && 
+                  <div className={`playerhand ${player.outcome}`}>
+                  <div className='player-info'>
+                      <h1>Player{player.id} - {player.hand_value}</h1>
+                  </div>
+                  <div className={`player-cards`}>
+                      {player?.hand.map((card) => {
+                          let cardPath = `/cards/${cardValues[card.value]}${card.suit[0]}.jpg`
+                          return ( <>
+                          <img className="playing-card" src={cardPath} alt={"Card " + card.value + " of " + card.suit}/>
+                          </>);
+                      })}
+                  </div>
+                  {/* <div className={`actions ${turn === player.id ? 'active' : ''}`}>
+                      <button className="action-button" onClick={() => drawCard(player.id)} disabled={turn !== player.id}>Hit</button>
+                      <button className="action-button" onClick={() => setTurn(turn + 1)} disabled={turn !== player.id}>Stand</button>
+                  </div> */}
             </div>
             ))}
             </div>

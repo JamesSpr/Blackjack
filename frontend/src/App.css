@@ -67,9 +67,8 @@ html, body, #app, .game-space {
 
 .players {
     display: flex;
-    justify-content: space-between;
-    /* flex-wrap: wrap; */
-    align-items: center;
+    margin: 0 auto;
+    max-width: 100%;
     overflow-x: auto;
 }
 
@@ -90,12 +89,6 @@ html, body, #app, .game-space {
     height: 125px;
 }
 
-.playerhand.active {
-    position: absolute;
-    top: 25vh;
-    width: 100%;
-}
-
 .playerhand.active * .playing-card {
     width: 200px;
     height: 250px;
@@ -107,6 +100,12 @@ html, body, #app, .game-space {
 
 .player-cards {
     display: flex;
+}
+
+.player-cards.active {
+    display: flex;
+    margin: 0 auto;
+    overflow-x: auto;
 }
 
 .playing-card {
@@ -127,4 +126,34 @@ html, body, #app, .game-space {
 }
 .actions.active {
     display: block;
+}
+
+.outcome-screen {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgb(50, 50, 50);
+    border-radius: 10px;
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+@media screen and (max-width: 600px) {
+    .playing-card {
+        width: 100px;
+        height: 125px;
+    }
+
+    .playerhand.active * .playing-card {
+        width: 150px;
+        height: 200px;
+    }
+
+    .players {
+        justify-content: space-between;
+    }
+
+    .player-cards.active {
+        justify-content: space-between;
+    }
 }
