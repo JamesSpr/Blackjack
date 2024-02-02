@@ -125,8 +125,8 @@ class Blackjack:
                     hand_value += card_value
                     
                 if i > 0 and hidden == True: # Skip the face down card value
-                    pass
-                
+                    hand_value -= card_value
+
             return hand_value
         
         
