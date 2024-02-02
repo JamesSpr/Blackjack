@@ -157,3 +157,15 @@ html, body, #app, .game-space {
         justify-content: space-between;
     }
 }
+
+@media screen and (max-height: 800px) {
+    .playing-card {
+        width: 100px;
+        height: 125px;
+    }
+
+    .playerhand.active * .playing-card {
+        width: 150px;
+        height: 200px;
+    }
+}
