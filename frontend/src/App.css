@@ -158,14 +158,14 @@ html, body, #app, .game-space {
     }
 }
 
-@media screen and (max-height: 600px) {
+@media screen and (max-height: 650px) {
     .playing-card {
-        width: 100px;
-        height: 125px;
+        width: 50px;
+        height: 75px;
     }
 
     .playerhand.active * .playing-card {
-        width: 150px;
-        height: 200px;
+        width: 75px;
+        height: 100px;
     }
 }
