@@ -104,8 +104,7 @@ class Blackjack:
         
 
     def dealer_draw(self):
-        self.dealer.hand_value = self.calculate_player_hand(self.dealer, hidden=False)
-        
+        print(self.dealer.hand_value)
         while self.dealer.hand_value < 17:
             new_card = self.deck.draw()
             self.dealer.hand.append(new_card)
@@ -118,16 +117,16 @@ class Blackjack:
         if player.id == "dealer":
             ace_rule = False
             for i, card in enumerate(player.hand):
-                card_value = card.int_value(self.deck.values.index(card.value)) 
-                if card_value == 1 and not ace_rule:
-                    hand_value += 11
-                    ace_rule = True
-                else:
-                    hand_value += card_value
-                    
                 if i > 0 and hidden == True: # Skip the face down card value
-                    hand_value -= card_value
-
+                    pass
+                else:
+                    card_value = card.int_value(self.deck.values.index(card.value)) 
+                    if card_value == 1 and not ace_rule:
+                        hand_value += 11
+                        ace_rule = True
+                    else:
+                        hand_value += card_value
+                        
             return hand_value
         
         
