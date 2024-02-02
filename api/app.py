@@ -5,7 +5,7 @@ import json
 # from flask_cors import CORS, cross_origin
 
 def create_app():
-    app = Flask(__name__, static_folder='../build', static_url_path='/')
+    app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
     # cors = CORS(app=app, origins="https://blackjack-demo-dev.vercel.app/")
 
     @app.route("/")
