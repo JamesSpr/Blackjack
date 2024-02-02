@@ -158,7 +158,7 @@ html, body, #app, .game-space {
     }
 }
 
-@media screen and (max-height: 800px) {
+@media screen and (max-height: 600px) {
     .playing-card {
         width: 100px;
         height: 125px;
