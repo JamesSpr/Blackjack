@@ -143,10 +143,6 @@ const BlackjackGame = ({game, setGame}) => {
                           </>);
                       })}
                   </div>
-                  {/* <div className={`actions ${turn === player.id ? 'active' : ''}`}>
-                      <button className="action-button" onClick={() => drawCard(player.id)} disabled={turn !== player.id}>Hit</button>
-                      <button className="action-button" onClick={() => setTurn(turn + 1)} disabled={turn !== player.id}>Stand</button>
-                  </div> */}
             </div>
             ))}
             </div>
