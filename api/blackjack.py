@@ -117,7 +117,7 @@ class Blackjack:
         if player.id == "dealer":
             ace_rule = False
             for i, card in enumerate(player.hand):
-                if i > 0 and hidden == True: # Skip the face down card value
+                if i == 0 and hidden == True: # Skip the face down card value
                     pass
                 else:
                     card_value = card.int_value(self.deck.values.index(card.value)) 
