@@ -7,6 +7,10 @@ import json
 def create_app():
     app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
     # cors = CORS(app=app, origins="https://blackjack-demo-dev.vercel.app/")
+    @app.route('/')
+    def index():
+        return app.send_static_file('index.html')
+
 
     @app.route("/")
     def index():
