@@ -10,11 +10,6 @@ def create_app():
     @app.route('/')
     def index():
         return app.send_static_file('index.html')
-
-
-    @app.route("/")
-    def index():
-        return app.send_static_file('index.html')
     
     @app.route("/blackjack", methods=['GET', 'OPTIONS'])
     @app.route("/blackjack/<int:players>", methods=['GET', 'OPTIONS'])
