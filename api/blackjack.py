@@ -104,8 +104,8 @@ class Blackjack:
         
 
     def dealer_draw(self):
+        # Recalculate with the first card not hidden
         self.dealer.hand_value = self.calculate_player_hand(self.dealer, hidden=False)
-        print(self.dealer.hand_value)
         
         while self.dealer.hand_value < 17:
             new_card = self.deck.draw()
